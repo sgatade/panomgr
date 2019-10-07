@@ -1,0 +1,2 @@
+# panomgr
+Panorama Image Manager
