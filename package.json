@@ -1,0 +1,30 @@
+{
+  "name": "panomgr",
+  "version": "1.0.0",
+  "description": "Panorama Manager",
+  "main": "index.js",
+  "scripts": {
+    "start": "env-cmd -f ./config/prod.env node ./src/index.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon ./src/index.js",
+    "test": "env-cmd -f ./config/test.env jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sgatade/panomgr.git"
+  },
+  "author": "SG@2019",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sgatade/panomgr/issues"
+  },
+  "homepage": "https://github.com/sgatade/panomgr#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "express": "^4.17.1",
+    "mongoose": "^5.7.3",
+    "randomstring": "^1.1.5"
+  },
+  "devDependencies": {
+    "env-cmd": "^9.0.3"
+  }
+}
