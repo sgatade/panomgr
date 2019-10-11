@@ -6,3 +6,11 @@ project {
     background-color: lightblue;
     margin: 2px;
 }
+
+.status {
+    background-color: lightgoldenrodyellow;
+    font-size: 12px;
+    padding: 4px;
+    margin: 2px;
+    border-radius: 4px;
+}

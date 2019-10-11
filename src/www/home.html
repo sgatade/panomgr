@@ -2,29 +2,46 @@
     <head>
         <title>Panorama Manager</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </head>
     <body ng-app="panomgr" style="background-color: lightgray">
         <div class="page-header" style="padding-left: 10px; margin-bottom: 0px">
-            <h1>Panorama Manager</h1></div>
+            <h1>Panorama Manager                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span></h1></div>
 
-        <div class="container-fluid pt-0 pr-4 pl-2">
+        <div class="container-fluid pt-0 pr-4 pl-2" ng-controller="ProjectsController">
 
             <div class="row">
 
                 <!-- Projects -->
-                <div class="col-3 float-left pr-2" ng-controller="ProjectsController" >
+                <div class="col-3 float-left pr-2" >
+
+                    <!-- New Project-->
+                    <form>
+                        <div class="form-row align-middle" >
+                            <div class="col-10">
+                                <input type="text" class="form-control" id="inputProjectName" placeholder="Add new Project" ng-model="project.name">
+                                
+                            </div>
+                            <div class="col-2 align-middle">
+                                <a href=""><i class="material-icons align-middle" style="font-size: 38;" ng-click="validateName()">add_box</i></a>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="list-group">
-                        <a ng-class="{'list-group-item list-group-item-action align-middle active': project.active, 'list-group-item list-group-item-action align-middle': !project.active}" ng-repeat="project in projects" href="#">
-                            {{project.name}}
-                            <span class="badge badge-pill badge-light float-right align-middle">{{project.count}}</span>
-                        </a>
+                        <div ng-repeat="project in projects" ng-class="{'list-group-item list-group-item-action align-middle active': project.active, 'list-group-item list-group-item-action align-middle': !project.active}" >
+                            <i class="material-icons align-middle float-left mr-2" style="color:red">delete</i>
+                            <a href="#" ng-click="choose(project)">{{project.name}}</a>
+                            <span class="badge badge-primary align-middle">4</span>
+                            <i class="material-icons align-middle float-right">link</i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Pictures -->
                 <div class="col-lg-9" style="background-color: white; border-radius: 3px">
                     <div class="page-header p-1" >
-                        <h3>Patil Works, Kop</h1>      
+                        <h3>{{selectedProject.name}}</h1>      
                     </div>
                     <div class="container">
                         <div class="row">

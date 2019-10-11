@@ -7,6 +7,9 @@ const connect = require("./db/mongoose");
 connect(app);
 
 // Routers
+// Users
+const userRouter = require("./routes/users");
+
 // WWW : gallery
 const galleryRouter = require("./routes/gallery");
 
@@ -22,5 +25,6 @@ app.use(express.static(wwwPath));
 
 // app.use(galleryRouter);
 app.use(projectRouter);
+app.use(userRouter);
 
 module.exports = app;

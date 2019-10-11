@@ -5,6 +5,25 @@ const Project = require("../models/projects");
 
 const router = new express.Router();
 
+router.get("/api/projects", async (req, res) => {
+
+    try {
+        const projects = await Project.find();
+        
+        if(!projects) {
+            // No matching project found
+            res.status(404).send({
+                error: "Failed to list projects"
+            });
+        }
+
+        res.send(projects);
+
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
 router.get("/api/projects/:id", async (req, res) => {
 
     try {
@@ -22,8 +41,6 @@ router.get("/api/projects/:id", async (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
-
-    res.send("Hello from Project Router! " + randstr.generate(randopts));
 });
 
 // Create new Project
