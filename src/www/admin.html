@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panorama Manager : Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style/common.css" crossorigin="anonymous">
+  </head>
+  <body ng-app="panomgr">
+      <div class="form-group">
+          <h2>Panorama Manager - Admin</h2>
+      </div>
+      <div class="container h-100" ng-controller="UserController">
+          <form class="col-4" style="background-color: lightgray; border-radius: 6px;padding-top: 10px;">
+              <div class="form-group">
+                <label for="formGroupUsernameInput">Username</label>
+                <input type="text" class="form-control" id="formGroupUsernameInput" placeholder="Enter your username...">
+              </div>
+              <div class="form-group">
+                <label for="formGroupPasswordInput">Password</label>
+                <input type="password" class="form-control" id="formGroupPasswordInput" placeholder="Enter your password">
+              </div>
+              <div class="form-group">
+                  <button type="submit" class="btn btn-primary">Sign in</button>
+              </div>
+              <div class="form-group">
+                  <div class="status">{{status}}</div>
+              </div>
+            </form>  
+            <form class="col-4" style="background-color: lightgray; border-radius: 6px;padding-top: 10px;">
+                <div class="form-group">
+                  <label for="formGroupUsernameInput">Username</label>
+                  <input type="text" class="form-control" id="formGroupUsernameInput" placeholder="Enter your username...">
+                </div>
+                <div class="form-group">
+                  <label for="formGroupPasswordInput">Password</label>
+                  <input type="password" class="form-control" id="formGroupPasswordInput" placeholder="Enter your password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                </div>
+                <div class="form-group">
+                    <div class="status">{{status}}</div>
+                </div>
+              </form>  
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="./script/app.js"></script>
+  </body>
+</html>
