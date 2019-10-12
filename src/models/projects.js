@@ -14,19 +14,20 @@ const projectSchema = new mongoose.Schema({
         maxlength: 10,
         required: true
     },
+    images: [{
+        name: {
+            type: String
+        },
+        url: {
+            type: String
+        } 
+    }],
     archived: {
         type: Boolean,
         deafult: false
     }
 }, {
     timestamps: true
-});
-
-// Add images as virtual field
-projectSchema.virtual('images', {
-    ref: "Image",
-    localField: "_id",
-    foreignField: "project"
 });
 
 const Project = mongoose.model("Project", projectSchema);

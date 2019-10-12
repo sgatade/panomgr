@@ -14,3 +14,16 @@ project {
     margin: 2px;
     border-radius: 4px;
 }
+
+.link {
+    cursor: pointer;
+}
+
+.uploadImage {
+    background-color: lightblue;
+    border-radius: 3px;
+    font-size: small;
+    padding: 4px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
