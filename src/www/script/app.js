@@ -63,6 +63,9 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             console.log("Status : ", response.status);
 
             $scope.projects = response.data;
+            if($scope.projects.length > 0) {
+                $scope.projects[0].active = true;
+            }
 
         }, (error) => {
 
@@ -83,7 +86,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         console.log("Project Name : ", $scope.newProjectName);
         $http.post("/api/projects", $scope.project, post_config).then((response) => {
             console.log("NEW PROJECT RESPONSE", response);
-            alert("New project " + $scope.project.name + " created!");
+            // alert("New project " + $scope.project.name + " created!");
             $scope.list();
 
         }, (error) => {
@@ -125,7 +128,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     }
 
     // Upload images
-    $scope.uploadStatus = "Waiting to upload...";
+    $scope.uploadStatus = "";
     $scope.upload = (files) => {
 
         if(!$scope.selectedProject) {
@@ -167,10 +170,37 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.updateImageName = (project, image) => {
         // alert("Project : " + project._id + ", Image : " + image._id + ", New Name : " + image.name);
         $http.patch("/api/projects/" + project._id + "/images/" + image._id, image).then( (response) => {
+            // Set project to local
+            $scope.selectedProject = response.data;
+
+            // Set the project as choosen
+            $scope.choose($scope.selectedProject);
+
+            $scope.projects[$scope.selectedProject].active = true;
+
             console.log("Success!");
         }, (error) => {
             console.log("Failed to update image name : ", error);
         });
+    };
+
+    // Update image name
+    $scope.deleteImage = (project, image) => {
+        var confirmed = $window.confirm("Are you sure you want to delete " + image.name + " from " + project.name + " ?");
+
+        if(confirmed) {
+            // alert("Project : " + project._id + ", Image : " + image._id + ", New Name : " + image.name);
+            $http.delete("/api/projects/" + project._id + "/images/" + image._id).then( (response) => {
+                console.log("Managed to delete image!");
+                // Set project to local
+                $scope.selectedProject = response.data;
+
+                // Set the project as choosen
+                $scope.choose($scope.selectedProject);
+            }, (error) => {
+                console.log("Failed to delete image : ", error);
+            });
+        }
     };
 
     $scope.list();

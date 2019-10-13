@@ -194,4 +194,14 @@ router.patch("/api/projects/:pid/images/:iid", async (req, res) => {
     res.send(project);
 });
 
+// Delete Image
+router.delete("/api/projects/:pid/images/:iid", async (req, res) => {
+    console.log("Project ID : " + req.params.pid + ", Image ID : " + req.params.iid);
+    const project = await Project.findById(req.params.pid);
+    await project.images.id(req.params.iid).remove();
+    await project.save();
+    console.log("Remaining images : ", project.images);
+    res.send(project);
+});
+
 module.exports = router;
