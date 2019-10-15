@@ -1,6 +1,6 @@
 // Logger
 const chalk = require("chalk");
-const y = "[tp-api] ";
+const y = "[panomgr] ";
 
 // d : Debug
 const d = (mesg) => {
