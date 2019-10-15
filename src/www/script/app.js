@@ -1,4 +1,4 @@
-var app = angular.module("panomgr", ["ngFileUpload"]);
+var app = angular.module("panomgr", ["ngRoute", "ngFileUpload"]);
 
 let post_config = {
     "Content-Type": "application/json" 
@@ -11,6 +11,10 @@ let post_upload = {
 app.constant('env', {
     URL: "http://localhost:3000"
 });
+
+function showURL(projectURL){
+    
+}
 
 app.controller("UserController", function($scope, $window, $http) {
     $scope.status = "Ready...";
@@ -49,8 +53,16 @@ app.controller("UserController", function($scope, $window, $http) {
     }
 });
 
+// Viewer controller
+app.controller("ViewerController", function($scope, $routeParams, $http){
+
+    console.log("Params", $routeParams);
+
+});
+
 app.controller("ProjectsController", function($scope, $http, $window, $document, Upload){
     
+    console.log("Here....");
     $scope.status = "Loading...";
     $scope.projects = [];
 
@@ -201,6 +213,12 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                 console.log("Failed to delete image : ", error);
             });
         }
+    };
+
+    $scope.getURL = (url) => {
+        console.log("Project : " + url);
+        let purl = "http://" + $window.location.hostname + ':' + $window.location.port + '/view/' + url;
+        prompt("Copy and paste the below URL into your brower!", purl);
     };
 
     $scope.list();

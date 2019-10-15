@@ -1,4 +1,5 @@
 const path = require("path");
+const hbs = require("hbs");
 const express = require("express");
 
 const app = express();
@@ -21,6 +22,9 @@ app.use(express.json());
 
 // Static
 const wwwPath = path.join(__dirname, "./www");
+
+app.set("view engine", "hbs");  // HBS for the Viewer Page
+hbs.localsAsTemplateData(app);
 app.use(express.static(wwwPath));
 
 // app.use(galleryRouter);

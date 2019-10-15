@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NMJ Works : Panorama Viewer</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.4/build/pannellum.css"/>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.4/build/pannellum.js"></script>
+        <style>
+            #panorama {
+                margin:0 auto;
+                /* width: 100%; */
+                width: 99vw;
+                height: 100%;
+                /* height: 100vw; */
+            }
+            #controls {
+                position: absolute;
+                bottom: 0;
+                z-index: 2;
+                text-align: center;
+                width: 100%;
+                padding-bottom: 3px;
+            }
+            .ctrl {
+                padding: 5px 5px;
+                width: auto;
+                text-align: center;
+                background: rgba(200, 200, 200, 0.8);
+                display: inline-block;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+            .ctrl:hover {
+                background: rgba(200, 200, 200, 1);
+            }
+        </style>
+    </head>
+    <body style="background-color: black" onload="setPannellum('{{baseUrl}}{{initial}}')">
+        {{baseUrl}}
+        <div id="panorama">
+            <div id="controls">
+                {{#each images}}
+                
+                <div class="ctrl" id="{{_id}}" onclick="setPannellum('{{../baseUrl}}{{url}}')">{{name}}</div>
+                {{/each}}
+            </div>
+        </div>
+        <script>
+            <!-- 
+                var baseUrl = "{{{baseUrl}}}";
+                // Create viewer
+                function setPannellum(image){
+                    viewer = pannellum.viewer('panorama', {
+                        "panorama": image,
+                        "autoLoad": true,
+                        "autoRotate": -2,
+                        "title": "NMJ Works",
+                        "author": "NMJ Works",
+                        "showControls": true,
+                        "touchstart":true,
+                        "hfov": 120
+                    });
+                };
+            -->
+        </script>
+    </body>
+</html>

@@ -27,6 +27,34 @@ router.get("/api/projects", async (req, res) => {
     }
 });
 
+//VIEWER ROUTE : Move to seperate route file
+router.get("/view/:id", async (req, res) => {
+    console.log("Show Images for Project with ID : ", req.params.id);
+    
+    const project = await Project.findOne({urlcode:req.params.id});
+    if(!project) {
+        res.render("error", {
+            errorShort: "Invalid URL!!!",
+            errorLong: "URL you have supplied ending with '" + req.params.id + "' is invalid!!!"
+        });
+    } else {
+        console.log("Image Count : ", project.images.length);
+
+        if(project.images.length <= 0) {
+            res.render("error", {
+                errorShort: "No images!",
+                errorLong: "There are no images to display!!!"
+            });
+        };
+    
+        res.render("viewer", {
+            initial: project.images[0].url,
+            images: project.images,
+            baseUrl: "http://localhost:3000/"
+        });
+    }
+});
+  
 // Get project details : not used
 router.get("/api/projects/:id", async (req, res) => {
 
@@ -143,7 +171,6 @@ router.post("/api/projects/images", upload.array("image", 5), (req, res) => {
         console.log("Not able to find project with ID : " + req.body.project._id + ", " + error);
         res.status(400).send(error);
     });
-    
 });
 
 // Update project (Name & Archive Status)

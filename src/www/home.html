@@ -9,77 +9,78 @@
         <div class="page-header" style="padding-left: 10px; margin-bottom: 0px">
             <h1>Panorama Manager</h1></div>
 
-        <div class="container-fluid pt-0 pr-4 pl-2" ng-controller="ProjectsController">
 
-            <div class="row">
+            <div class="container-fluid pt-0 pr-4 pl-2" ng-controller="ProjectsController">
 
-                <!-- Projects -->
-                <div class="col-3 float-left pr-2" >
-
-                    <!-- New Project-->
-                    <form>
-                        <div class="form-row align-middle" >
-                            <div class="col-10">
-                                <input type="text" class="form-control" id="inputProjectName" placeholder="Add new Project" ng-model="project.name">
-                                
+                <div class="row">
+    
+                    <!-- Projects -->
+                    <div class="col-3 float-left pr-2" >
+    
+                        <!-- New Project-->
+                        <form>
+                            <div class="form-row align-middle" >
+                                <div class="col-10">
+                                    <input type="text" class="form-control" id="inputProjectName" placeholder="Add new Project" ng-model="project.name">
+                                    
+                                </div>
+                                <div class="col-2 align-middle">
+                                    <a href=""><i class="material-icons align-middle" style="font-size: 38;" ng-click="validateName()">add_box</i></a>
+                                </div>
                             </div>
-                            <div class="col-2 align-middle">
-                                <a href=""><i class="material-icons align-middle" style="font-size: 38;" ng-click="validateName()">add_box</i></a>
+                        </form>
+    
+                        <div class="list-group">
+                            <div ng-repeat="project in projects" class="" ng-class="{'list-group-item list-group-item-action align-middle active': project.active, 'list-group-item list-group-item-action align-middle': !project.active}" >
+                                <!-- Delete -->
+                                <i class="material-icons align-middle float-left mr-2 link" style="color:red" title="Delete this project!" ng-click="delete(project)">delete</i>
+                                <span href="#" class="link" ng-click="choose(project)">{{project.name}}</span>
                             </div>
-                        </div>
-                    </form>
-
-                    <div class="list-group">
-                        <div ng-repeat="project in projects" class="" ng-class="{'list-group-item list-group-item-action align-middle active': project.active, 'list-group-item list-group-item-action align-middle': !project.active}" >
-                            <!-- Delete -->
-                            <i class="material-icons align-middle float-left mr-2 link" style="color:red" title="Delete this project!" ng-click="delete(project)">delete</i>
-                            <span href="#" class="link" ng-click="choose(project)">{{project.name}}</span>
-                            <i class="material-icons align-middle float-right">link</i>
                         </div>
                     </div>
-                </div>
-
-                <!-- Pictures -->
-                <div class="col-lg-9" style="background-color: white; border-radius: 3px">
-                    <div class="d-flex justify-content-between" ng-if="!selectedProject"><h3>Please select a project</h3></div>
-                    <span ng-if="selectedProject">
-                        <div class="page-header p-1" >
-                            <span ng-if="selectedProject"><h3>{{selectedProject.name}}</h3></span>
-                            <span ng-if="selectedProject">
-                                <button ngf-select ng-model="imageFiles" style="font-size: small;" multiple accept="image/*">Select Files</button> 
-                                <span ng-repeat="p in imageFiles"><span class="uploadImage">{{p.name}}</span></span>
-                                <button ng-click="upload(imageFiles)" style="font-size: small;">Upload</button> 
-                                <span id = "status" style="font-size: small;">{{uploadStatus}}</span>
-                            </span>
-                        </div>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-4" ng-repeat="image in selectedProject.images">
-                                    <div class="thumbnail" style="padding: 4px;">
-                                        <a href="{{image.url}}">
-                                            <img src="{{image.url}}" alt="Lights" style="width:100%">
-                                        </a>
-                                        <!-- <div class="caption">
-                                            <input type="text" value="{{image.name}}" style="font-size: small;"><i class="material-icons align-middle float-right ml-2 link" style="color:red" title="Delete this project!" ng-click="delete(project)">delete</i>
-                                        </div> -->
-                                        <div class="input-group input-group-sm align-middle ">
-                                            <input type="text" class="form-control" placeholder="image.name" ng-model="image.name">
-                                            <div class="input-group-append">
-                                                <i class="material-icons align-middle float-right ml-1 mt-1 link" title="Save project name..." ng-click="updateImageName(selectedProject, image)">save</i>
-                                                <i class="material-icons align-middle float-right ml-2 mt-1 link" style="color:red" title="Delete this image!" ng-click="deleteImage(selectedProject, image)">delete</i>
+    
+                    <!-- Pictures -->
+                    <div class="col-lg-9" style="background-color: white; border-radius: 3px">
+                        <div class="d-flex justify-content-between" ng-if="!selectedProject"><h3>Please select a project</h3></div>
+                        <span ng-if="selectedProject">
+                            <div class="page-header p-1" >
+                                <span ng-if="selectedProject"><h3>{{selectedProject.name}} <i class="material-icons align-middle link" title="Click to get a Panorama Link to this gallery!" style="color: mediumblue" ng-click="getURL(selectedProject.urlcode)">link</i></span></h3> 
+                                <span ng-if="selectedProject">
+                                    <button ngf-select ng-model="imageFiles" style="font-size: small;" multiple accept="image/*">Select Files</button> 
+                                    <span ng-repeat="p in imageFiles"><span class="uploadImage">{{p.name}}</span></span>
+                                    <button ng-click="upload(imageFiles)" style="font-size: small;">Upload</button> 
+                                    <span id = "status" style="font-size: small;">{{uploadStatus}}</span>
+                                </span>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-4" ng-repeat="image in selectedProject.images">
+                                        <div class="thumbnail" style="padding: 4px;">
+                                            <a href="{{image.url}}">
+                                                <img src="{{image.url}}" alt="Lights" style="width:100%">
+                                            </a>
+                                            <!-- <div class="caption">
+                                                <input type="text" value="{{image.name}}" style="font-size: small;"><i class="material-icons align-middle float-right ml-2 link" style="color:red" title="Delete this project!" ng-click="delete(project)">delete</i>
+                                            </div> -->
+                                            <div class="input-group input-group-sm align-middle ">
+                                                <input type="text" class="form-control" placeholder="image.name" ng-model="image.name">
+                                                <div class="input-group-append">
+                                                    <i class="material-icons align-middle float-right ml-1 mt-1 link" title="Save project name..." ng-click="updateImageName(selectedProject, image)">save</i>
+                                                    <i class="material-icons align-middle float-right ml-2 mt-1 link" style="color:red" title="Delete this image!" ng-click="deleteImage(selectedProject, image)">delete</i>
+                                                </div>
+                                                
                                             </div>
-                                            
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </span>
+                    </span>
+                </div>
             </div>
-        </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-route.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
         <script src="./script/app.js"></script>
     </body>
