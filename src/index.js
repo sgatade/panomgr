@@ -3,12 +3,12 @@ const log = require("./utils/logger");
 
 const port = process.env.PORT;
 
-log.i(`Using Port : ${port}`);
+log.i("Using Port : " + port);
 
 // Wait for the DB to connect, on event start listening     
 app.on("db-ready", function() {
     app.listen(port, () => {
-        log.i(`PANO-MGR Server listening on Port ${port}`);
+        log.i(`PANO-MGR Server now listening on Port ${port}`);
     })
 });
 
