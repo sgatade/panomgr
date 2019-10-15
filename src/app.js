@@ -11,9 +11,6 @@ connect(app);
 // Users
 const userRouter = require("./routes/users");
 
-// WWW : gallery
-const galleryRouter = require("./routes/gallery");
-
 // API : Projects 
 const projectRouter = require("./routes/projects");
 
