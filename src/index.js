@@ -3,6 +3,8 @@ const log = require("./utils/logger");
 
 const port = process.env.PORT;
 
+console.log("Using Port : ", port);
+
 // Wait for the DB to connect, on event start listening     
 app.on("db-ready", function() {
     app.listen(port, () => {
