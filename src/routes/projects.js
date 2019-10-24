@@ -22,9 +22,11 @@ router.get("/api/projects", async (req, res) => {
         }
 
         console.log("[MANAGER] Listing " + projects.length + " projects...");
+        console.log("[MANAGER] Project 1 ", projects[0]);
         res.send(projects);
 
     } catch (error) {
+        console.log("Error: ", error);
         res.status(400).send(error);
     }
 });
@@ -53,6 +55,7 @@ router.get("/view/:id", async (req, res) => {
         
         console.log("[VIEWER] Render Project ID : " + project._id + ", Image : " + host + project.images[0].url);
         res.render("viewer", {
+            clientName: project.name,
             initial: project.images[0].url,
             images: project.images,
             baseUrl: host

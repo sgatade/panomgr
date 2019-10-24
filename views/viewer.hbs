@@ -47,13 +47,15 @@
         <script>
             <!-- 
                 var baseUrl = "{{{baseUrl}}}";
+                var clientName = "{{{clientName}}}"
+                console.log("Client : ", clientName);
                 // Create viewer
                 function setPannellum(image){
                     viewer = pannellum.viewer('panorama', {
                         "panorama": image,
                         "autoLoad": true,
                         "autoRotate": -2,
-                        "title": "NMJ Works",
+                        "title": clientName,
                         "author": "NMJ Works",
                         "showControls": true,
                         "touchstart":true,

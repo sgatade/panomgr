@@ -20,7 +20,11 @@ const projectSchema = new mongoose.Schema({
         },
         url: {
             type: String
-        } 
+        },
+        uploaded: {
+            type: Date,
+            default: Date.now
+        }
     }],
     archived: {
         type: Boolean,

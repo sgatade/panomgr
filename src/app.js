@@ -36,7 +36,7 @@ app.use(function (err, req, res, next) {
 
 // 404
 app.get("*", async (req, res) => {
-  res.send("<div style='font-family: verdana;'><h2>Oopsy Daisies!!!!<h2><h3>You are not allowed to view this page/directory...!</h3><p>@Panorama Manager</p></div>");
+  res.status(404).send("<div style='font-family: verdana;'><h2>Oopsy Daisies!!!!<h2><h3>You are not allowed to view this page/directory...!</h3><p>@Panorama Manager</p></div>");
 });
 
 module.exports = app;

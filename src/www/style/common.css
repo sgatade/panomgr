@@ -27,3 +27,14 @@ project {
     margin-left: 2px;
     margin-right: 2px;
 }
+
+.createdAt {
+    background-color: grey;
+    color: white;
+    border-radius: 4px;
+    font-size: smaller;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
