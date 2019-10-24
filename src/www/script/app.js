@@ -191,6 +191,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             $scope.log("Uploading " + files.length + " file(s)...", null, true);
             files.forEach( (file) => {
                 console.log("PROJEX : ", $scope.selectedProject);
+                $scope.log("Uploading " + file.name + "...", null, false);
                 Upload.upload({
                     url: "/api/projects/images",
                     data: {
@@ -211,12 +212,10 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                     // $scope.choose($scope.selectedProject);
                 }, (error) => {
                     console.log(error);
-                    // $scope.log("Failed to upload file!");
+                    $scope.log("Failed to upload file!", true);
                     alert("Failed to upload file!", error.data);
                 });
             });
-
-            $scope.log("Upload process finished...", null, false);
         }
     };
 
