@@ -32,6 +32,11 @@ app.use(userRouter);
 app.use(function (err, req, res, next) {
     console.log('This is the invalid field ->', err.field)
     next(err)
-  })
+});
+
+// 404
+app.get("*", async (req, res) => {
+  res.send("<div style='font-family: verdana;'><h2>Oopsy Daisies!!!!<h2><h3>You are not allowed to view this page/directory...!</h3><p>@Panorama Manager</p></div>");
+});
 
 module.exports = app;

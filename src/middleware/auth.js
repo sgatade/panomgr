@@ -1,4 +1,5 @@
 const auth = async (req, res, next) => {
+    
     if(req.body.user == "nmj" && req.body.user == "nmJ2020Kop*") {
         req.body["id"] = "JKSDKLN3454597234KSDF";
         req.body["username"] = "nmj";

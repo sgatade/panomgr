@@ -46,6 +46,7 @@ app.controller("UserController", function($scope, $window, $http) {
 
             // Login Failure
             console.log("Error : ", error);
+            
             if(error.status == 400) {
                 $scope.status = error.data.error;
             }
@@ -95,14 +96,18 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     };
 
     $scope.validateName = () => {
-        console.log("Project Name : ", $scope.newProjectName);
+        if(!$scope.project.name || $scope.project.name.length <= 0) {
+            alert("Could not get the project name, cannot created project!");
+            return;
+        }
+
         $http.post("/api/projects", $scope.project, post_config).then((response) => {
             console.log("NEW PROJECT RESPONSE", response);
             // alert("New project " + $scope.project.name + " created!");
             $scope.list();
 
         }, (error) => {
-            alert("Failed to create new project " + $scope.project.name + " !!!");
+            alert("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
         });
     }
 
@@ -131,7 +136,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             $http.delete("/api/projects/" + project._id).then((response) => {
                 alert("Project " + project.name + " deleted!");                
             }, (error) => {
-                alert("Failed to delete " + project.name + " Project!");
+                alert("Failed to delete " + project.name + " Project!" + "\n" + error.data);
             });
 
             // Refresh projects
@@ -173,6 +178,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                     $scope.choose($scope.selectedProject);
                 }, (error) => {
                     console.log(error);
+                    alert("Failed to upload file!\n" + error.data);
                 });
             })
         }
@@ -192,7 +198,8 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
 
             console.log("Success!");
         }, (error) => {
-            console.log("Failed to update image name : ", error);
+            console.log("Failed to update image name : ", error.data);
+            alert("Failed to update image name!\n", error.data);
         });
     };
 
@@ -211,6 +218,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                 $scope.choose($scope.selectedProject);
             }, (error) => {
                 console.log("Failed to delete image : ", error);
+                alert("Failed to delete image!\n" + error.data);
             });
         }
     };

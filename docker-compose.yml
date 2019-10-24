@@ -16,7 +16,7 @@ services:
         container_name: panomgr-app
         image: sgatade/panomgr-app
         volumes: 
-            - .:/usr/src/panomgr
+            - ./panomgr:/usr/src/panomgr
         networks: 
             - panomgr-net
         ports:

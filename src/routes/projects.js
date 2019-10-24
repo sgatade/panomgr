@@ -15,11 +15,13 @@ router.get("/api/projects", async (req, res) => {
         
         if(!projects) {
             // No matching project found
+            console.log("[MANAGER] No projects found!");
             res.status(404).send({
                 error: "Failed to list projects"
             });
         }
 
+        console.log("[MANAGER] Listing " + projects.length + " projects...");
         res.send(projects);
 
     } catch (error) {
@@ -29,8 +31,10 @@ router.get("/api/projects", async (req, res) => {
 
 //VIEWER ROUTE : Move to seperate route file
 router.get("/view/:id", async (req, res) => {
-    console.log("Show Images for Project with ID : ", req.params.id);
-    
+
+    // Form host URL
+    const host = process.env.HOST + process.env.PORT + "/";
+
     const project = await Project.findOne({urlcode:req.params.id});
     if(!project) {
         res.render("error", {
@@ -38,7 +42,7 @@ router.get("/view/:id", async (req, res) => {
             errorLong: "URL you have supplied ending with '" + req.params.id + "' is invalid!!!"
         });
     } else {
-        console.log("Image Count : ", project.images.length);
+        console.log("[VIEWER] Total of " + project.images.length + " Image(s) for Project with ID " + project._id);
 
         if(project.images.length <= 0) {
             res.render("error", {
@@ -46,11 +50,12 @@ router.get("/view/:id", async (req, res) => {
                 errorLong: "There are no images to display!!!"
             });
         };
-    
+        
+        console.log("[VIEWER] Render Project ID : " + project._id + ", Image : " + host + project.images[0].url);
         res.render("viewer", {
             initial: project.images[0].url,
             images: project.images,
-            baseUrl: "http://localhost:3000/"
+            baseUrl: host
         });
     }
 });
@@ -108,10 +113,12 @@ router.post("/api/projects", async (req, res) => {
         const project = new Project(req.body);
         await project.save();
 
+        console.log("[MANAGER] Created new project " + project.name + " with URL " + project.urlcode + "...");
         res.send(project);
         
     } catch (error) {
-        res.status(400).send(error);
+        console.log("CREATE PROJECT: ", error);
+        res.status(400).send(error.message);
     }
 });
 
