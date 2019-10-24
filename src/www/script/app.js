@@ -32,9 +32,6 @@ app.controller("UserController", function($scope, $window, $http) {
         $http.post("/api/users/login", $scope.user, post_config).then((data) => {
             
             // Login success
-            console.log("DATA: ", data);
-            console.log("Status : ", data.status);
-
             if(data.status == 200) {
                 console.log("Applying path");
                 // $location.path('/home/ABC123');
@@ -71,14 +68,21 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.list = () => {
         $http.get("/api/projects", post_config).then((response) => {
             
-            // Login success
-            console.log("DATA: ", response);
-            console.log("Status : ", response.status);
-
+            // Success
             $scope.projects = response.data;
-            if($scope.projects.length > 0) {
-                $scope.projects[0].active = true;
+
+            // Set project to 1st project
+            if($scope.projects.length <= 0) {
+    
+                $scope.selectedProject = null;
+                
+            } else {
+                $scope.selectedProject = $scope.projects[0];
+
+                // Set the project as choosen
+                $scope.choose($scope.selectedProject);
             }
+            
 
         }, (error) => {
 
@@ -95,7 +99,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         name: ""
     };
 
-    $scope.validateName = () => {
+    $scope.create = () => {
         if(!$scope.project.name || $scope.project.name.length <= 0) {
             alert("Could not get the project name, cannot created project!");
             return;
@@ -105,6 +109,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             console.log("NEW PROJECT RESPONSE", response);
             // alert("New project " + $scope.project.name + " created!");
             $scope.list();
+            $scope.project.name = "";
 
         }, (error) => {
             alert("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
@@ -134,7 +139,11 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         var confirmed = $window.confirm("Are you sure you want to delete this project?");
         if(confirmed) {
             $http.delete("/api/projects/" + project._id).then((response) => {
-                alert("Project " + project.name + " deleted!");                
+                alert("Project " + project.name + " deleted!");
+
+                // Update list
+                $scope.list();
+
             }, (error) => {
                 alert("Failed to delete " + project.name + " Project!" + "\n" + error.data);
             });
