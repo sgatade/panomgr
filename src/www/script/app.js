@@ -129,7 +129,8 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             // alert("New project " + $scope.project.name + " created!");
             $scope.list();
             $scope.log("New project created!", null, false);
-
+            $scope.project.name = "";
+            
         }, (error) => {
             $scope.log("Failed to create new project!", null, false);
             console.log("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
