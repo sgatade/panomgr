@@ -192,7 +192,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             $scope.log("Uploading " + files.length + " file(s)...", null, true);
             files.forEach( (file) => {
                 console.log("PROJEX : ", $scope.selectedProject);
-                $scope.log("Uploading " + file.name + "...", null, false);
+                $scope.log("Uploading " + file.name + "...", null, true);
                 Upload.upload({
                     url: "/api/projects/images",
                     data: {
