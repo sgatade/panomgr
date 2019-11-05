@@ -5,22 +5,22 @@ services:
     panomgr-db:
         container_name: panomgr-db
         image: mongo
-        ports: 
+        ports:
             - 27017
-        networks: 
+        networks:
             - panomgr-net
-        volumes: 
-            - /mongo-db:/data/db 
+        volumes:
+            - /mongo-db:/data/db
 
     panomgr-app:
         container_name: panomgr-app
         image: sgatade/panomgr-app
-        volumes: 
-            - ./panomgr:/usr/src/panomgr
-        networks: 
+        networks:
             - panomgr-net
+        volumes:
+            - /home/centos/work/panomgr/gallery:/usr/src/panomgr/src/www/gallery
         ports:
             - 3003:3003
-   
+
 networks:
     panomgr-net:
