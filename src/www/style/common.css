@@ -19,6 +19,11 @@ project {
     cursor: pointer;
 }
 
+.proj-list {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
 .uploadImage {
     background-color: lightblue;
     border-radius: 3px;
