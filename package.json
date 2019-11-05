@@ -22,7 +22,8 @@
     "chalk": "^2.4.2",
     "express": "^4.17.1",
     "hbs": "^4.0.6",
-    "mongoose": "^5.7.3",
+    // Changing to Mongoose > 5.7.5 due to CVE-2019-17426 (https://nvd.nist.gov/vuln/detail/CVE-2019-17426)
+    "mongoose": ">=5.7.5",
     "multer": "^1.4.2",
     "randomstring": "^1.1.5"
   },
