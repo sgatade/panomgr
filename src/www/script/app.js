@@ -289,7 +289,8 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.getURL = (url) => {
         console.log("Project : " + url);
         let purl = "http://" + $window.location.hostname + ':' + $window.location.port + '/view/' + url;
-        prompt("Copy and paste the below URL into your brower!", purl);
+        $window.open(purl, "_blank");
+        //prompt("Copy and paste the below URL into your brower!", purl);
     };
 
     $scope.getVersion();
