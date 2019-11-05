@@ -113,7 +113,6 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
 
                 $scope.log("Listing " + $scope.projects.length + " project(s)...");
             }
-            
 
         }, (error) => {
 
@@ -121,6 +120,14 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             console.log("Error : ", error);
             $scope.log("Failed to load projects!", true);
         });
+    }
+
+    // Change Project Name input background if there is no text or text is deleted
+    $scope.checkInput = () => {
+        var projNameInput = document.getElementById("inputProjectName");
+        if(projNameInput.value.length <= 0) {
+            projNameInput.style.backgroundColor = "white";
+        }
     }
 
     // Add Project function

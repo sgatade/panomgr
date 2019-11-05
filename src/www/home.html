@@ -32,7 +32,7 @@
                     <form>
                         <div class="form-row align-middle" >
                             <div class="col-10">
-                                <input type="text" class="form-control" id="inputProjectName" placeholder="Add new Project" ng-model="project.name">
+                                <input type="text" class="form-control" id="inputProjectName" placeholder="Add new Project" ng-model="project.name" ng-change="checkInput()">
                             </div>
                             <div class="col-2 align-middle">
                                 <a href=""><i class="material-icons align-middle" style="font-size: 38; background-color: white; border-radius: 4px;" ng-click="create()">add_box</i></a>
