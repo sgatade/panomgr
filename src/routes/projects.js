@@ -28,7 +28,7 @@ router.get("/api/projects", async (req, res) => {
         }
 
         console.log("[MANAGER] Listing " + projects.length + " projects...");
-        console.log("[MANAGER] Project 1 ", projects[0]);
+        // console.log("[MANAGER] Project 1 ", projects[0]);
         res.send(projects);
 
     } catch (error) {
@@ -171,10 +171,10 @@ router.post("/api/projects/images", upload.array("image", 5), (req, res) => {
 
     Project.findById(req.body.project._id).then( (project) => {
 
-        console.log("Response : ", project);
+        // console.log("Response : ", project);
 
         const images = project.images || [];
-        console.log("Images", images);
+        // console.log("Images", images);
     
         images.push({name: "Change Name", url: path});
     
