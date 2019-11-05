@@ -76,8 +76,20 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
 
     $scope.log("Loading");
 
-    $scope.projects = [];
+    // Get version
+    $scope.version = "NONE";
+    $scope.getVersion = () => {
+        $http.get("/api/version").then((response => {
+            $scope.version = response.data;
+        }),
+        (error) => {
+            $scope.log("Failed to get version!");
+            $scope.version = "NONE";
+        });
+    }
 
+    $scope.projects = [];
+    
     // Get list of projects
     $scope.list = () => {
         $scope.log("Listing projects...");
@@ -117,9 +129,13 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     };
 
     $scope.create = () => {
-        if(!$scope.project.name || $scope.project.name.length <= 3) {
+        var projNameInput = document.getElementById("inputProjectName");
+        if(!$scope.project.name || $scope.project.name.length <= 5) {
             $scope.log("Project name too short!", true);
+            projNameInput.style.backgroundColor = "red";
             return;
+        } else {
+            projNameInput.style.backgroundColor = "white";
         }
 
         $scope.log("Creating new project...", null, true);
@@ -132,7 +148,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             $scope.project.name = "";
             
         }, (error) => {
-            $scope.log("Failed to create new project!", null, false);
+            $scope.log("Failed to create new project : " + error.data, null, false);
             console.log("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
         });
     }
@@ -269,5 +285,6 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         prompt("Copy and paste the below URL into your brower!", purl);
     };
 
+    $scope.getVersion();
     $scope.list();
 });

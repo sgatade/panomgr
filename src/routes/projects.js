@@ -7,6 +7,12 @@ const Project = require("../models/projects");
 
 const router = new express.Router();
 
+// Get version
+router.get("/api/version", async (req, res) => {
+    console.log("Getting version...", process.env.VERSION);
+    res.send(process.env.VERSION || "NO VERSION");
+});
+
 // List projects
 router.get("/api/projects", async (req, res) => {
 

@@ -8,8 +8,8 @@
     <body style="background-color: grey" ng-controller="ProjectsController">
         <div class="container-fluid">
             <div class="row align-items-center" style="background-color: black; color:white;">
-                <div class="col-lg pl-2">
-                    <h2><i class="material-icons" style="font-size: x-large; ">panorama</i> Panorama Manager</h2>    
+                <div class="col-sm pl-2">
+                    <h2><i class="material-icons" style="font-size: x-large; ">panorama</i> Panorama Manager <span class="badge badge-secondary" style="font-size: x-small;">v{{version}}</span></h2>
                 </div>
                 <div class="col-lg text-primary" ng-class="{'text-warning': status.e}">
                     <span class="float-right">&nbsp;{{status.mesg}}</span>
