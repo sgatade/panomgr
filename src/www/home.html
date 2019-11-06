@@ -45,7 +45,9 @@
                             <!-- Delete -->
                             <i class="material-icons align-middle float-left mr-1 link" style="color:orange" title="Delete this project!" ng-click="delete(project)">delete</i>
                             <span href="#" class="link" ng-click="choose(project)">{{project.name}}</span>
-                            <span class="createdAt" title="Created on {{project.createdAt | date : 'd-MMM-y, h:m a'}}">{{project.createdAt | date : "d-MMM"}}</span>
+                            <span class="imageCount" title="Images in this project...">{{project.images.length}}</span>
+                            <span class="createdAt float-sm-right" title="Created on {{project.createdAt | date : 'd-MMM-y, h:m a'}}">{{project.createdAt | date : "d-MMM"}}</span>
+                            
                         </div>
                     </div>
                 </div>
