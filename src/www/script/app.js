@@ -209,7 +209,6 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             alert("Please choose a project to upload files for...");
         } 
 
-        console.log(files);
         $scope.log("Selected " + files.length + " file(s) to upload...");
         if(files && files.length) {
             $scope.log("Uploading " + files.length + " file(s)...", null, true);
@@ -229,7 +228,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                     // Set project to local
                     $scope.selectedProject = response.data;
 
-                    // // Update list
+                    // Update list
                     // $scope.list();
 
                     // // Set the project as choosen

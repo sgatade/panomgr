@@ -17,7 +17,7 @@ router.get("/api/version", async (req, res) => {
 router.get("/api/projects", async (req, res) => {
 
     try {
-        const projects = await Project.find();
+        const projects = await Project.find().sort({createdAt: -1});
         
         if(!projects) {
             // No matching project found
