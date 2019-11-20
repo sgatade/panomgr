@@ -45,6 +45,7 @@
                         <div ng-repeat="project in projects" class="pl-2" ng-class="{'list-group-item list-group-item-action align-middle active': project.active, 'list-group-item list-group-item-action align-middle': !project.active}" >
                             <!-- Delete -->
                             <i class="material-icons align-middle float-left mr-1 link" style="color:orange" title="Delete this project!" ng-click="delete(project)">delete</i>
+
                             <span href="#" class="link" ng-click="choose(project)">{{project.name}}</span>
                             <span class="imageCount" title="Images in this project...">{{project.images.length}}</span>
                             <span class="createdAt float-sm-right" title="Created on {{project.createdAt | date : 'd-MMM-y, h:m a'}}">{{project.createdAt | date : "d-MMM"}}</span>
@@ -60,7 +61,12 @@
                         <div class="page-header p-1" >
                             <div class="row align-middle">
                                 <div class="col-lg-6">
-                                    <span ng-if="selectedProject"><h3>{{selectedProject.name}} <i class="material-icons align-middle link" style="color: mediumblue; font-size: xx-large;" ng-click="getURL(selectedProject.urlcode)" title="Click to get a Panorama Link to this gallery!" >link</i></span></h3> 
+                                    <span ng-if="selectedProject">
+                                        <!-- Edit Project -->
+                                        <i class="material-icons align-middle float-left mr-1 link" style="color:red; padding-top: 6px;" title="Edit the project!" ng-click="edit(selectedProject)">edit</i>
+
+                                        <h3>{{selectedProject.name}} <i class="material-icons align-middle link" style="color: mediumblue; font-size: xx-large;" ng-click="getURL(selectedProject.urlcode)" title="Click to get a Panorama Link to this gallery!" >link</i></h3>
+                                    </span>
                                 </div>
                                 <div class="col-lg-6 align-middle">
                                     <span class="float-right" ng-if="selectedProject">

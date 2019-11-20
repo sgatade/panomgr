@@ -180,6 +180,28 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         // $scope.log("Ready...");
     };
 
+    // Edit projects
+    $scope.edit = (project) => {
+        var newName = $window.prompt("Please enter a new name for the project?", project.name);
+        console.log(newName);
+
+        if(!newName || newName.length <= 0) {
+            $scope.log("Invalid name provided, cancelling rename!", null, false);
+            return;
+        }
+
+        $http.patch("/api/projects/" + project._id, {name: newName}).then((response) => {
+            console.log("Project name changed! ", response.data);
+            $scope.log("Project name changed!", null, false);
+
+            $scope.list();
+
+        }, (error) => {
+            console.log("Failed to change project name : ", error);
+            $scope.log("Failed to change project name : " + error.data, true, false);
+        });
+    };
+
     // Delete project
     $scope.delete = (project) => {
         var confirmed = $window.confirm("Are you sure you want to delete this project?");
