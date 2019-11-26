@@ -1,22 +1,22 @@
 var app = angular.module("panomgr", ["ngRoute", "ngFileUpload"]);
 
 let post_config = {
-    "Content-Type": "application/json" 
+    "Content-Type": "application/json"
 };
 
 let post_upload = {
-      "Content-Type": "multipart/form-data"
+    "Content-Type": "multipart/form-data"
 };
 
 app.constant('env', {
     URL: "http://localhost:3000"
 });
 
-function showURL(projectURL){
-    
+function showURL(projectURL) {
+
 }
 
-app.controller("UserController", function($scope, $window, $http) {
+app.controller("UserController", function ($scope, $window, $http) {
     $scope.status = "Loading";
 
     // User object
@@ -30,9 +30,9 @@ app.controller("UserController", function($scope, $window, $http) {
         console.log("user", $scope.user);
 
         $http.post("/api/users/login", $scope.user, post_config).then((data) => {
-            
+
             // Login success
-            if(data.status == 200) {
+            if (data.status == 200) {
                 console.log("Applying path");
                 // $location.path('/home/ABC123');
                 // $scope.$apply();
@@ -43,8 +43,8 @@ app.controller("UserController", function($scope, $window, $http) {
 
             // Login Failure
             console.log("Error : ", error);
-            
-            if(error.status == 400) {
+
+            if (error.status == 400) {
                 $scope.status = error.data.error;
             }
         });
@@ -52,14 +52,14 @@ app.controller("UserController", function($scope, $window, $http) {
 });
 
 // Viewer controller
-app.controller("ViewerController", function($scope, $routeParams, $http){
+app.controller("ViewerController", function ($scope, $routeParams, $http) {
 
     console.log("Params", $routeParams);
 
 });
 
-app.controller("ProjectsController", function($scope, $http, $window, $document, Upload){
-    
+app.controller("ProjectsController", function ($scope, $http, $window, $document, Upload) {
+
     console.log("Here....");
     $scope.status = {
         e: false,
@@ -82,31 +82,47 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         $http.get("/api/version").then((response => {
             $scope.version = response.data;
         }),
-        (error) => {
-            $scope.log("Failed to get version!");
-            $scope.version = "NONE";
-        });
+            (error) => {
+                $scope.log("Failed to get version!");
+                $scope.version = "NONE";
+            });
     }
 
     $scope.projects = [];
-    
+
     // Get list of projects
     $scope.list = () => {
         $scope.log("Listing projects...");
         $http.get("/api/projects", post_config).then((response) => {
-            
+
             // Success
             $scope.projects = response.data;
 
+            console.log("Proj Length : " + $scope.projects.length);
+            let projImageSize = 0;
+            $scope.projects.forEach((project) => {
+                console.log(project.name);
+                project.images.forEach((image) => {
+                    console.log(image.size);
+                    projImageSize += image.size;
+                })
+                project["size"] = projImageSize;
+                projImageSize = 0;
+            });
+
+            console.log("Projects : ", $scope.projects);
+
+
             // Set project to 1st project
-            if($scope.projects.length <= 0) {
-    
+            if ($scope.projects.length <= 0) {
+
                 $scope.selectedProject = null;
-                
+
                 $scope.log("No project(s) available!");
-                
+
             } else {
                 $scope.selectedProject = $scope.projects[0];
+
 
                 // Set the project as choosen
                 $scope.choose($scope.selectedProject);
@@ -125,7 +141,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     // Change Project Name input background if there is no text or text is deleted
     $scope.checkInput = () => {
         var projNameInput = document.getElementById("inputProjectName");
-        if(projNameInput.value.length <= 0) {
+        if (projNameInput.value.length <= 0) {
             projNameInput.style.backgroundColor = "white";
         }
     }
@@ -137,7 +153,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
 
     $scope.create = () => {
         var projNameInput = document.getElementById("inputProjectName");
-        if(!$scope.project.name || $scope.project.name.length <= 5) {
+        if (!$scope.project.name || $scope.project.name.length <= 5) {
             $scope.log("Project name too short!", true);
             projNameInput.style.backgroundColor = "red";
             return;
@@ -153,7 +169,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
             $scope.list();
             $scope.log("New project created!", null, false);
             $scope.project.name = "";
-            
+
         }, (error) => {
             $scope.log("Failed to create new project : " + error.data, null, false);
             console.log("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
@@ -166,10 +182,10 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         console.log("Project Choosen : ", project);
 
         // Set active/inactive for CSS background of the link
-        $scope.projects.forEach( (p) => {
+        $scope.projects.forEach((p) => {
             // console.log("Changing " + p.name);
-            
-            if(p._id == project._id) {
+
+            if (p._id == project._id) {
                 p["active"] = true;
             } else {
                 p["active"] = false;
@@ -185,12 +201,12 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
         var newName = $window.prompt("Please enter a new name for the project?", project.name);
         console.log(newName);
 
-        if(!newName || newName.length <= 0) {
+        if (!newName || newName.length <= 0) {
             $scope.log("Invalid name provided, cancelling rename!", null, false);
             return;
         }
 
-        $http.patch("/api/projects/" + project._id, {name: newName}).then((response) => {
+        $http.patch("/api/projects/" + project._id, { name: newName }).then((response) => {
             console.log("Project name changed! ", response.data);
             $scope.log("Project name changed!", null, false);
 
@@ -205,7 +221,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     // Delete project
     $scope.delete = (project) => {
         var confirmed = $window.confirm("Are you sure you want to delete this project?");
-        if(confirmed) {
+        if (confirmed) {
             $scope.log("Deleting selected project!", true, true);
             $http.delete("/api/projects/" + project._id).then((response) => {
                 $scope.log("Selected project deleted!", false, false);
@@ -227,14 +243,14 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.uploadStatus = "";
     $scope.upload = (files) => {
         $scope.uploadStatus = "";
-        if(!$scope.selectedProject) {
+        if (!$scope.selectedProject) {
             alert("Please choose a project to upload files for...");
-        } 
+        }
 
         $scope.log("Selected " + files.length + " file(s) to upload...");
-        if(files && files.length) {
+        if (files && files.length) {
             $scope.log("Uploading " + files.length + " file(s)...", null, true);
-            files.forEach( (file) => {
+            files.forEach((file) => {
                 console.log("PROJEX : ", $scope.selectedProject);
                 $scope.log("Uploading " + file.name + "...", null, true);
                 Upload.upload({
@@ -243,12 +259,21 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
                         "project": $scope.selectedProject,
                         image: file
                     }
-                }).then( (response) => {
+                }).then((response) => {
                     console.log("RESPONSE : ", response);
                     $scope.log("Uploaded " + file.name + "...");
 
                     // Set project to local
                     $scope.selectedProject = response.data;
+
+                    // Update project size
+                    // Move to backend TODO: @sg on 26th Nov.
+                    let projImageSize = 0;
+                    $scope.selectedProject.images.forEach((image) => {
+                        console.log(image.size);
+                        projImageSize += image.size;
+                    })
+                    $scope.selectedProject["size"] = projImageSize;
 
                     // Update list
                     // $scope.list();
@@ -268,7 +293,7 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.updateImageName = (project, image) => {
         $scope.log("Changing image name...", null, true);
         // alert("Project : " + project._id + ", Image : " + image._id + ", New Name : " + image.name);
-        $http.patch("/api/projects/" + project._id + "/images/" + image._id, image).then( (response) => {
+        $http.patch("/api/projects/" + project._id + "/images/" + image._id, image).then((response) => {
             // Set project to local
             $scope.selectedProject = response.data;
 
@@ -290,12 +315,21 @@ app.controller("ProjectsController", function($scope, $http, $window, $document,
     $scope.deleteImage = (project, image) => {
         var confirmed = $window.confirm("Are you sure you want to delete " + image.name + " from " + project.name + " ?");
         $scope.log("Deleting selected image!", null, true);
-        if(confirmed) {
+        if (confirmed) {
             // alert("Project : " + project._id + ", Image : " + image._id + ", New Name : " + image.name);
-            $http.delete("/api/projects/" + project._id + "/images/" + image._id).then( (response) => {
+            $http.delete("/api/projects/" + project._id + "/images/" + image._id).then((response) => {
                 console.log("Managed to delete image!");
                 // Set project to local
                 $scope.selectedProject = response.data;
+
+                // Update project size
+                // Move to backend TODO: @sg on 26th Nov.
+                let projImageSize = 0;
+                $scope.selectedProject.images.forEach((image) => {
+                    console.log(image.size);
+                    projImageSize += image.size;
+                })
+                $scope.selectedProject["size"] = projImageSize;
 
                 // Set the project as choosen
                 $scope.choose($scope.selectedProject);

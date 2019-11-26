@@ -163,7 +163,8 @@ var upload = multer({storage: storage});
 
 // Upload image
 router.post("/api/projects/images", upload.array("image", 5), (req, res) => {
-    // console.log("Request : ", req);
+    // console.log("FS1 : ", req.files[0].size);
+    // console.log("FS2 : ", req.image[0].size);
     // console.log("Body : ", req.body);
     
     const path = "gallery/" + req.body.project.urlcode + "/" + req.files[0].originalname;
@@ -176,7 +177,7 @@ router.post("/api/projects/images", upload.array("image", 5), (req, res) => {
         const images = project.images || [];
         // console.log("Images", images);
     
-        images.push({name: "Change Name", url: path});
+        images.push({name: "Change Name", url: path, size: req.files[0].size});
     
         project.images = images;
     
@@ -243,7 +244,7 @@ router.delete("/api/projects/:pid/images/:iid", async (req, res) => {
     const project = await Project.findById(req.params.pid);
     await project.images.id(req.params.iid).remove();
     await project.save();
-    console.log("Remaining images : ", project.images);
+    // console.log("Remaining images : ", project.images);
     res.send(project);
 });
 

@@ -14,9 +14,14 @@ const projectSchema = new mongoose.Schema({
         maxlength: 10,
         required: true
     },
+    size : {
+        type: Number,
+        default: 0
+    },
     images: [{
         name: {
-            type: String
+            type: String,
+            default: 0
         },
         url: {
             type: String
@@ -24,6 +29,11 @@ const projectSchema = new mongoose.Schema({
         uploaded: {
             type: Date,
             default: Date.now
+        },
+        // Added on 26th Nov.
+        // @SG
+        size: {
+            type: Number
         }
     }],
     archived: {
