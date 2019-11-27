@@ -10,7 +10,7 @@ services:
         networks:
             - panomgr-net
         volumes:
-            - /mongo-db:/data/db
+            - /home/centos/work/panomgr/mongo-db:/data/db
 
     panomgr-app:
         container_name: panomgr-app
