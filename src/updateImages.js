@@ -1,9 +1,15 @@
-
+const readline = require("readline");
 const app = new Object();
 
 const mongoose = require("mongoose");
 const Project = require("../src/models/projects");
 const fs = require("fs");
+
+// Read input
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
 // Create DB URL
 const db_url =
@@ -29,23 +35,31 @@ mongoose.connect(db_url,
 
     let projectImageSize = 0;
     projects.forEach( async (project) => {
-        console.log("Project : " + project.name + ", Image Count : " + project.images.length + ", Size : " + project.size);
-        project.images.forEach( async (image) => {
+        projectImageSize = 0;
+        console.log("---------------------------------------------------------------------------------------");
+        console.log("1. Project : " + project.name + ", Image Count : " + project.images.length + ", Size : " + project.size);
+        project.images.forEach( (image) => {
 
             try {
-                var stats = await fs.statSync("./src/www/" + image.url);
+                var stats = fs.statSync("./src/www/" + image.url);
                 console.log("-- Image : " + image.name + ", Size : " + image.size + ", D. Size : " + stats["size"] + ", Path : " + image.url);
-                projectImageSize += stats["size"];
+                if(image.size <= 0 || image.size === undefined) {
+                    image.size = stats["size"];
+                }
+
+                projectImageSize += image.size;
 
             } catch (error) {
                 console.log(error);                
             }
-            
         });
 
-        console.log("Project Size : " + project.size);
+        
+        project.size = projectImageSize;
+        console.log("2. Project : " + project.name + ", Image Count : " + project.images.length + ", Size : " + project.size);
+
         await project.save();
-        projectImageSize = 0;
+        
     } );
 });
 
