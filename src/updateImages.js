@@ -12,13 +12,7 @@ const rl = readline.createInterface({
 });
 
 // Create DB URL
-const db_url =
-  "mongodb://" +
-  process.env.DB_IP +
-  ":" +
-  process.env.DB_PORT +
-  "/" +
-  process.env.DB_NAME;
+const db_url = "mongodb://panomgr-db:27017/PANO-MGR-PROD";
 
 mongoose.connect(db_url,
     {
