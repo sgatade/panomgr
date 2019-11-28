@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const Project = require("../models/projects");
 
 const router = new express.Router();
@@ -8,6 +9,7 @@ router.post("/api/users", async (req, res) => {
 
     try {
         const user = new User(req.body);
+        user.token = jwt.sign({id: user.name}, user.name);
         await user.save();
 
         res.send(user);

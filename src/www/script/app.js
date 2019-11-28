@@ -8,6 +8,8 @@ let post_upload = {
     "Content-Type": "multipart/form-data"
 };
 
+let token = undefined;
+
 app.constant('env', {
     URL: "http://localhost:3000"
 });
@@ -23,7 +25,7 @@ app.controller("UserController", function ($scope, $window, $http) {
     $scope.user = {
         name: "",
         pwd: ""
-    }
+    };
 
     $scope.login = () => {
 
