@@ -1,14 +1,15 @@
-var app = angular.module("panomgr", ["ngRoute", "ngFileUpload"]);
+var app = angular.module("panomgr", ["ngRoute", "ngStorage", "ngFileUpload"]);
 
 let post_config = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
 };
 
 let post_upload = {
     "Content-Type": "multipart/form-data"
 };
 
-let token = undefined;
+let gUser = undefined;
+let gToken = undefined;
 
 app.constant('env', {
     URL: "http://localhost:3000"
@@ -18,8 +19,10 @@ function showURL(projectURL) {
 
 }
 
-app.controller("UserController", function ($scope, $window, $http) {
+app.controller("UserController", function ($scope, $window, $http, $sessionStorage) {
     $scope.status = "Loading";
+
+    $scope.$storage = $sessionStorage;
 
     // User object
     $scope.user = {
@@ -27,27 +30,40 @@ app.controller("UserController", function ($scope, $window, $http) {
         pwd: ""
     };
 
+    $scope.checkURL = () => {
+        let url = new URL($window.location);
+        let code = url.searchParams.get("code");
+        console.log(code);
+        if(parseInt(code) === 401) {
+            console.log("You need to re-login...");
+            $scope.status = "Invalid login or session, please login again...";
+        }
+    };
+
     $scope.login = () => {
 
         console.log("user", $scope.user);
 
-        $http.post("/api/users/login", $scope.user, post_config).then((data) => {
+        $http.post("/api/users/login", $scope.user, post_config).then((response) => {
 
             // Login success
-            if (data.status == 200) {
+            if (response.status == 200) {
                 console.log("Applying path");
-                // $location.path('/home/ABC123');
-                // $scope.$apply();
-                $window.location.href = "/home.html?ID=ABC123";
+
+                // console.log("Token : ", response.data.token);
+                $scope.$storage.token = response.data.token;
+                // console.log("User : ", response.data.user);
+                $scope.$storage.user = JSON.stringify(response.data.user);
+                $window.location.href = "/home.html";
             }
 
         }, (error) => {
 
             // Login Failure
-            console.log("Error : ", error);
+            // console.log("Error All : ", error);
 
             if (error.status == 400) {
-                $scope.status = error.data.error;
+                $scope.status = error.data.message;
             }
         });
     }
@@ -60,9 +76,12 @@ app.controller("ViewerController", function ($scope, $routeParams, $http) {
 
 });
 
-app.controller("ProjectsController", function ($scope, $http, $window, $document, Upload) {
+app.controller("ProjectsController", function ($scope, $http, $window, $sessionStorage, $document, Upload) {
+    $scope.$storage = $sessionStorage;
 
-    console.log("Here....");
+    // Add auth token to the header
+    $http.defaults.headers.common['Authorization'] = "Bearer " + $scope.$storage.token;
+
     $scope.status = {
         e: false,
         mesg: "Loading...",
@@ -70,7 +89,6 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
     };
 
     $scope.log = (m, e = false, a = false) => {
-        console.log("Status Error? " + e);
         $scope.status.e = e;
         $scope.status.mesg = m;
         $scope.status.ani = a;
@@ -81,12 +99,18 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
     // Get version
     $scope.version = "NONE";
     $scope.getVersion = () => {
-        $http.get("/api/version").then((response => {
+        $http.get("/api/version", post_config).then((response => {
             $scope.version = response.data;
         }),
             (error) => {
-                $scope.log("Failed to get version!");
-                $scope.version = "NONE";
+                // Auth issue, force re-login
+                if (error.status === 401) {
+                    console.log("Invalid user/session. Please log-in again...");
+                    $window.location.href = "/index.html?code=401";
+                } else {
+                    $scope.log("Failed to get version!");
+                    $scope.version = "NONE";
+                };
             });
     }
 
@@ -114,7 +138,6 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
 
             console.log("Projects : ", $scope.projects);
 
-
             // Set project to 1st project
             if ($scope.projects.length <= 0) {
 
@@ -134,9 +157,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
 
         }, (error) => {
 
-            // Login Failure
-            console.log("Error : ", error);
-            $scope.log("Failed to load projects!", true);
+            // Auth issue, force re-login
+            if (error.status === 401) {
+                console.log("Invalid user/session. Please log-in again...");
+                $window.location.href = "/index.html?code=401";
+            } else {
+                // Login Failure
+                console.log("Error : ", error);
+                $scope.log("Failed to load projects!", true);
+            };
         });
     }
 
@@ -173,8 +202,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
             $scope.project.name = "";
 
         }, (error) => {
-            $scope.log("Failed to create new project : " + error.data, null, false);
-            console.log("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
+            // Auth issue, force re-login
+            if (error.status === 401) {
+                console.log("Invalid user/session. Please log-in again...");
+                $window.location.href = "/index.html?code=401";
+            } else {
+                // Login Failure
+                $scope.log("Failed to create new project : " + error.data, null, false);
+                console.log("Failed to create new project " + $scope.project.name + " !!!" + "\n" + error.data);
+            };
         });
     }
 
@@ -215,8 +251,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
             $scope.list();
 
         }, (error) => {
-            console.log("Failed to change project name : ", error);
-            $scope.log("Failed to change project name : " + error.data, true, false);
+            // Auth issue, force re-login
+            if (error.status === 401) {
+                console.log("Invalid user/session. Please log-in again...");
+                $window.location.href = "/index.html?code=401";
+            } else {
+                // 
+                console.log("Failed to change project name : ", error);
+                $scope.log("Failed to change project name : " + error.data, true, false);
+            };
         });
     };
 
@@ -232,8 +275,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
                 $scope.list();
 
             }, (error) => {
-                $scope.log("Failed to delete selected project!", true, false);
-                console.log("Failed to delete " + project.name + " Project!" + "\n" + error.data);
+                // Auth issue, force re-login
+                if (error.status === 401) {
+                    console.log("Invalid user/session. Please log-in again...");
+                    $window.location.href = "/index.html?code=401";
+                } else {
+                    // 
+                    $scope.log("Failed to delete selected project!", true, false);
+                    console.log("Failed to delete " + project.name + " Project!" + "\n" + error.data);
+                };
             });
 
             // Refresh projects
@@ -307,9 +357,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
 
             console.log("Success!");
         }, (error) => {
-            console.log("Failed to update image name : ", error.data);
-            $scope.log("Failed to update image name!", null, false);
-            console.log("Failed to update image name!", error.data);
+            // Auth issue, force re-login
+            if (error.status === 401) {
+                console.log("Invalid user/session. Please log-in again...");
+                $window.location.href = "/index.html?code=401";
+            } else {
+                // 
+                console.log("Failed to update image name : ", error.data);
+                $scope.log("Failed to update image name!", null, false);
+            };
         });
     };
 
@@ -337,8 +393,15 @@ app.controller("ProjectsController", function ($scope, $http, $window, $document
                 $scope.choose($scope.selectedProject);
                 $scope.log("Selected image deleted!");
             }, (error) => {
-                $scope.log("Failed to delete selected image!");
-                alert("Failed to delete image!" + error.data);
+                // Auth issue, force re-login
+                if (error.status === 401) {
+                    console.log("Invalid user/session. Please log-in again...");
+                    $window.location.href = "/index.html?code=401";
+                } else {
+                    // 
+                    $scope.log("Failed to delete selected image!");
+                    alert("Failed to delete image!" + error.data);
+                };
             });
         }
     };
