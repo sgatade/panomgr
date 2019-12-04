@@ -27,6 +27,9 @@ const auth = async (req, res, next) => {
     } catch (error) {
         console.log("Error : ", error);
         res.status(401).send({message: error.message});
+
+        // Res.redirect to /logout & deprecate the token, then force re-login by sending 401 code back to frontend
+        // @SG on 2-Dec-2019
     }
 }
 
