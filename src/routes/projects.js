@@ -4,22 +4,28 @@ const multer = require("multer");
 const fs = require("fs");
 const randopts = require("../utils/urlcode");
 const Project = require("../models/projects");
+const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
 // Get version
-router.get("/api/version", async (req, res) => {
-    console.log("Getting version...", process.env.VERSION);
-    res.send(process.env.VERSION || "NO VERSION");
+router.get("/api/version", auth, async (req, res) => {
+
+    try {
+        console.log("Get Application Version : " + process.env.VERSION);
+        res.send(process.env.VERSION || "NO VERSION");
+    } catch (error) {
+        res.status(500).send( {message: error.message} );
+    }
 });
 
 // List projects
-router.get("/api/projects", async (req, res) => {
+router.get("/api/projects", auth, async (req, res) => {
 
     try {
-        const projects = await Project.find().sort({createdAt: -1});
-        
-        if(!projects) {
+        const projects = await Project.find().sort({ createdAt: -1 });
+
+        if (!projects) {
             // No matching project found
             console.log("[MANAGER] No projects found!");
             res.status(404).send({
@@ -32,8 +38,7 @@ router.get("/api/projects", async (req, res) => {
         res.send(projects);
 
     } catch (error) {
-        console.log("Error: ", error);
-        res.status(400).send(error);
+        res.status(500).send( {message: error.message} );
     }
 });
 
@@ -43,8 +48,8 @@ router.get("/view/:id", async (req, res) => {
     // Form host URL
     const host = process.env.HOST + process.env.PORT + "/";
 
-    const project = await Project.findOne({urlcode:req.params.id});
-    if(!project) {
+    const project = await Project.findOne({ urlcode: req.params.id });
+    if (!project) {
         res.render("error", {
             errorShort: "Invalid URL!!!",
             errorLong: "URL you have supplied ending with '" + req.params.id + "' is invalid!!!"
@@ -52,13 +57,13 @@ router.get("/view/:id", async (req, res) => {
     } else {
         console.log("[VIEWER] Total of " + project.images.length + " Image(s) for Project with ID " + project._id);
 
-        if(project.images.length <= 0) {
+        if (project.images.length <= 0) {
             res.render("error", {
                 errorShort: "No images!",
                 errorLong: "There are no images to display!!!"
             });
         };
-        
+
         console.log("[VIEWER] Render Project ID : " + project._id + ", Image : " + host + project.images[0].url);
         res.render("viewer", {
             clientName: project.name,
@@ -68,14 +73,14 @@ router.get("/view/:id", async (req, res) => {
         });
     }
 });
-  
+
 // Get project details : not used
-router.get("/api/projects/:id", async (req, res) => {
+router.get("/api/projects/:id", auth, async (req, res) => {
 
     try {
         const project = await Project.findById(req.params.id);
-        
-        if(!project) {
+
+        if (!project) {
             // No matching project found
             res.status(404).send({
                 error: "Failed to find project with ID : " + req.params.id
@@ -85,22 +90,22 @@ router.get("/api/projects/:id", async (req, res) => {
         res.send(project);
 
     } catch (error) {
-        res.status(400).send(error);
+        res.status(500).send( {message: error.message} );
     }
 });
 
 // Create new Project
-router.post("/api/projects", async (req, res) => {
+router.post("/api/projects", auth, async (req, res) => {
 
     try {
-
+        console.log("Create new project with name " + req.body.name);
         // Check for duplicate URLCODE
         let codeOk = false;
         let urlcode = "";
         while (!codeOk) {
-            urlcode = randstr.generate(randopts);    
-            const tempProject = await Project.findOne({urlcode})
-            if(!tempProject) {
+            urlcode = randstr.generate(randopts);
+            const tempProject = await Project.findOne({ urlcode })
+            if (!tempProject) {
                 // If no project with matching URLCODE is found, then the current URLCODE is good to go
                 console.log("Creating new project with URLCODE : ", urlcode);
 
@@ -114,7 +119,7 @@ router.post("/api/projects", async (req, res) => {
         }
 
         // Set archive if not set already
-        if(!req.body["archived"]) {
+        if (!req.body["archived"]) {
             req.body["archived"] = false;
         }
 
@@ -124,23 +129,22 @@ router.post("/api/projects", async (req, res) => {
 
         console.log("[MANAGER] Created new project " + project.name + " with URL " + project.urlcode + "...");
         res.send(project);
-        
+
     } catch (error) {
-        console.log("CREATE PROJECT: ", error);
-        res.status(400).send(error.message);
+        res.status(500).send({ message: error.message });
     }
 });
 
 // Config multer
 // var storage = multer.diskStorage({
 //     dest: ""
-    // function (req, file, callback) {
-    //     callback(null, './uploads/' + "name1");
-    // }
+// function (req, file, callback) {
+//     callback(null, './uploads/' + "name1");
+// }
 //     // ,
-    // filename: function (req, file, cb) {
-    //     cb(null, "aconda1");
-    // }
+// filename: function (req, file, cb) {
+//     cb(null, "aconda1");
+// }
 // });
 
 var storage = multer.diskStorage({
@@ -148,7 +152,7 @@ var storage = multer.diskStorage({
 
         let folder = './src/www/gallery/' + req.body.project.urlcode;
         console.log(folder);
-        if(!fs.existsSync(folder)) {
+        if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder);
         }
 
@@ -159,44 +163,49 @@ var storage = multer.diskStorage({
         callback(null, file.originalname);
     }
 });
-var upload = multer({storage: storage});
+var upload = multer({ storage: storage });
 
 // Upload image
-router.post("/api/projects/images", upload.array("image", 5), (req, res) => {
+router.post("/api/projects/images", auth, upload.array("image", 5), (req, res) => {
     // console.log("FS1 : ", req.files[0].size);
     // console.log("FS2 : ", req.image[0].size);
     // console.log("Body : ", req.body);
-    
-    const path = "gallery/" + req.body.project.urlcode + "/" + req.files[0].originalname;
-    console.log("Images uploaded to : ", path);
 
-    Project.findById(req.body.project._id).then( (project) => {
+    try {
+        const path = "gallery/" + req.body.project.urlcode + "/" + req.files[0].originalname;
+        console.log("Images uploaded to : ", path);
 
-        // console.log("Response : ", project);
+        Project.findById(req.body.project._id).then((project) => {
 
-        const images = project.images || [];
-        // console.log("Images", images);
-    
-        images.push({name: "Change Name", url: path, size: req.files[0].size});
-    
-        project.images = images;
-    
-        project.save();
-        res.send(project);
-    
-    }, (error) => {
-        console.log("Not able to find project with ID : " + req.body.project._id + ", " + error);
-        res.status(400).send(error);
-    });
+            // console.log("Response : ", project);
+
+            const images = project.images || [];
+            // console.log("Images", images);
+
+            images.push({ name: "Change Name", url: path, size: req.files[0].size });
+
+            project.images = images;
+
+            project.save();
+            res.send(project);
+
+        }, (error) => {
+            console.log("Not able to find project with ID : " + req.body.project._id + ", " + error);
+            res.status(400).send(error);
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
 });
 
 // Update project (Name & Archive Status)
-router.patch("/api/projects/:id", async (req, res) => {
-    
+router.patch("/api/projects/:id", auth, async (req, res) => {
+
     try {
-        const project = await Project.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
-        
-        if(!project) {
+        const project = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+
+        if (!project) {
             // No matching project found
             res.status(404).send({
                 error: "Failed to find project with ID : " + req.params.id
@@ -206,15 +215,17 @@ router.patch("/api/projects/:id", async (req, res) => {
         res.send(project);
 
     } catch (error) {
-        res.status(400).send(error);
+        res.status(500).send({ message: error.message });
     }
 });
 
 // Delete a project
-router.delete("/api/projects/:id", async (req, res) => {
+router.delete("/api/projects/:id", auth, async (req, res) => {
+
     try {
+        console.log("Delete Project with ID : " + req.params.id);
         const project = await Project.findByIdAndDelete(req.params.id);
-        if(!project) {
+        if (!project) {
             // No matching project found
             res.status(404).send({
                 error: "Failed to find project with ID : " + req.params.id
@@ -224,28 +235,39 @@ router.delete("/api/projects/:id", async (req, res) => {
         res.send(project);
 
     } catch (error) {
-        res.status(400).send(error);
+        res.status(500).send({ message: error.message });
     }
 });
 
 // Update Image name
-router.patch("/api/projects/:pid/images/:iid", async (req, res) => {
-    console.log("Project ID : " + req.params.pid + ", Image ID : " + req.params.iid + ", New Name : " + req.body.name);
-    const project = await Project.findById(req.params.pid);
-    project.images.id(req.params.iid).name = req.body.name
-    await project.save();
-    console.log(project.images.id(req.params.iid));
-    res.send(project);
+router.patch("/api/projects/:pid/images/:iid", auth, async (req, res) => {
+
+    try {
+        console.log("Update Image for Project ID : " + req.params.pid + ", Image ID : " + req.params.iid + ", New Name : " + req.body.name);
+        const project = await Project.findById(req.params.pid);
+        project.images.id(req.params.iid).name = req.body.name
+        await project.save();
+        res.send(project);
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+
 });
 
 // Delete Image
-router.delete("/api/projects/:pid/images/:iid", async (req, res) => {
-    console.log("Project ID : " + req.params.pid + ", Image ID : " + req.params.iid);
-    const project = await Project.findById(req.params.pid);
-    await project.images.id(req.params.iid).remove();
-    await project.save();
-    // console.log("Remaining images : ", project.images);
-    res.send(project);
+router.delete("/api/projects/:pid/images/:iid", auth, async (req, res) => {
+
+    try {
+        console.log("Delete Image from Project ID : " + req.params.pid + ", Image ID : " + req.params.iid);
+        const project = await Project.findById(req.params.pid);
+        await project.images.id(req.params.iid).remove();
+        await project.save();
+        res.send(project);
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
 });
 
 module.exports = router;

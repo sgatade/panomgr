@@ -1,18 +1,19 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const Project = require("../models/projects");
+const User = require("../models/users");
+const auth = require("../middleware/auth");
 
 const router = new express.Router();
 
 // Create User
 router.post("/api/users", async (req, res) => {
-
+    
     try {
         const user = new User(req.body);
-        user.token = jwt.sign({id: user.name}, user.name);
+        
         await user.save();
 
-        res.send(user);
+        res.send(user.getPublicProfile());
 
     } catch (error) {
         res.status(400).send(error);
@@ -24,16 +25,30 @@ router.post("/api/users/login", async (req, res) => {
 
     try {
 
-        if(req.body.name == "nmj" && req.body.pwd == "nmj") {
-            res.send();
-        } else {
-            res.status(400).send({
-                error: "User name or password is wrong!"
-            });
-        }
+        const user = await User.findUser(req.body.name, req.body.pwd);
+        const token = await user.getAuthToken();
+        
+        res.send( {user: user.getPublicProfile(), token} );
         
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send({message: error.message});
+    }
+});
+
+// Not yet called
+router.post("/api/users/logout", auth, async (req, res) => {
+    try {
+        
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token;
+        })
+
+        await req.user.save();
+
+        res.send();
+
+    } catch (error) {
+        res.status(500).send({error});
     }
 });
 

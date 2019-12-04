@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./style/common.css" crossorigin="anonymous">
   </head>
   <body ng-app="panomgr">
-      <div class="container h-100" ng-controller="UserController">
+      <div class="container h-100" ng-controller="UserController" ng-init="checkURL()">
           <div class="row h-100 justify-content-center align-items-center">
               <form class="col-4" style="background-color: lightgray; border-radius: 6px;padding-top: 10px;">
                   <div class="form-group">
@@ -36,6 +36,7 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
 
     <script src="./script/app.js"></script>
