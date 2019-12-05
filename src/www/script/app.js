@@ -27,7 +27,7 @@ app.controller("UserController", function ($scope, $window, $http, $sessionStora
     // User object
     $scope.user = {
         name: "",
-        pwd: ""
+        password: ""
     };
 
     $scope.checkURL = () => {
