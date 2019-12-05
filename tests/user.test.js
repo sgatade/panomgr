@@ -23,10 +23,14 @@ beforeAll( async () => {
 
 // Create new user
 test('Should create a new user', async () => {
-    await request(App).post("/api/users").send({
+    const response = await request(App).post("/api/users").send({
         name: "janedoe",
         password: "Pass1987*"
     }).expect(200);
+
+    console.log("Create User Response", response.body);
+    const user = await User.findById(response.body._id); 
+    expect(user).not.toBeNull();
 });
 
 // Login existing user

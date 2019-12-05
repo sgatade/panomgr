@@ -3,8 +3,7 @@ const User = require("../models/users");
 
 const auth = async (req, res, next) => {
 
-    console.log("Req Method " + req.method + ", Path : ", req.path);
-    console.log("Auth Header : " + req.header("Authorization"));
+    console.log("Req Method " + req.method + ", Path : " + req.path + ", Auth : " + req.header("Authorization"));
 
     try {
         
