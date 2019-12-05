@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
 
 // Pre Save to hash password
 userSchema.pre("save", async function (next) {
-    console.log("Saving user...");
+    // console.log("Saving user...");
     const user = this;
 
     if(user.isModified("password")) {
@@ -64,7 +64,7 @@ userSchema.methods.getAuthToken = async function () {
 // Find user
 userSchema.statics.findUser = async (name, password) => {
     
-    console.log("FindUser : Details : Name : " + name + ", Pwd : " + password);
+    // console.log("FindUser : Details : Name : " + name + ", Pwd : " + password);
 
     // Try and find single user by name
     const user = await User.findOne({name});
@@ -72,12 +72,12 @@ userSchema.statics.findUser = async (name, password) => {
         throw new Error("Unable to login! Bad username or password!!!");
     }
 
-    console.log("FindUser : User FOund! ");
+    // console.log("FindUser : User FOund! ");
 
     // See if password matches
-    console.log("FindUser : PWD : " + password + " : " + user.password);
+    // console.log("FindUser : PWD : " + password + " : " + user.password);
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("FindUser : PWD Match : " + isMatch);
+    // console.log("FindUser : PWD Match : " + isMatch);
     if(!isMatch) {
         throw new Error("Unable to login! Bad username or password!!!");
     }
