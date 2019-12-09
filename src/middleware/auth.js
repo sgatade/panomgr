@@ -11,6 +11,7 @@ const auth = async (req, res, next) => {
         const decoded = await jwt.verify(token, process.env.JWT_KEY.toString());
 
         // Decoded contains _id, find the relevant user with the id and token
+        // console.log("Auth ID : " + decoded._id + ", Token : " + token);
         const user = await User.findOne( {_id: decoded._id, 'tokens.token': token} );
         
         if(!user) {
