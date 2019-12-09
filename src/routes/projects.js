@@ -1,7 +1,7 @@
 const express = require("express");
 const randstr = require("randomstring");
 const multer = require("multer");
-const fs = require("fs");
+const fs = require("fs-extra");
 const randopts = require("../utils/urlcode");
 const Project = require("../models/projects");
 const auth = require("../middleware/auth");
@@ -15,7 +15,7 @@ router.get("/api/version", auth, async (req, res) => {
         console.log("Get Application Version : " + process.env.VERSION);
         res.send(process.env.VERSION || "NO VERSION");
     } catch (error) {
-        res.status(500).send( {message: error.message} );
+        res.status(500).send({ message: error.message });
     }
 });
 
@@ -38,7 +38,7 @@ router.get("/api/projects", auth, async (req, res) => {
         res.send(projects);
 
     } catch (error) {
-        res.status(500).send( {message: error.message} );
+        res.status(500).send({ message: error.message });
     }
 });
 
@@ -90,7 +90,7 @@ router.get("/api/projects/:id", auth, async (req, res) => {
         res.send(project);
 
     } catch (error) {
-        res.status(500).send( {message: error.message} );
+        res.status(500).send({ message: error.message });
     }
 });
 
@@ -224,7 +224,7 @@ router.delete("/api/projects/:id", auth, async (req, res) => {
 
     try {
         console.log("Delete Project with ID : " + req.params.id);
-        const project = await Project.findByIdAndDelete(req.params.id);
+        const project = await Project.findById(req.params.id);
         if (!project) {
             // No matching project found
             res.status(404).send({
@@ -232,7 +232,41 @@ router.delete("/api/projects/:id", auth, async (req, res) => {
             });
         }
 
-        res.send(project);
+        // delete project images
+        const dir = "./src/www/gallery/" + project.urlcode;
+        console.log(dir);
+        // fs.stat(dir, (err) => {
+
+        //     if(!err) {
+        //         console.log("file exists");
+        //     } else {
+        //         throw err;
+        //     }
+        // });
+
+        fs.emptyDir(dir).then(() => {
+            // console.log("Directory " + dir + " emptied...");
+
+            fs.remove(dir).then(() => {
+                // console.log("Directory " + dir + " removed...");
+
+                // delete project
+                // const fproj = await Project.findByIdAndDelete(project._id);
+                // res.send(fproj);
+
+                Project.findByIdAndDelete(project._id).then( (fproj) => {
+                    res.send(fproj);
+                }, (err) => {
+                   throw err; 
+                });
+
+            }, (err) => {
+                if (err) throw err;
+            });
+
+        }, (err) => {
+            if (err) throw err;
+        });
 
     } catch (error) {
         res.status(500).send({ message: error.message });
